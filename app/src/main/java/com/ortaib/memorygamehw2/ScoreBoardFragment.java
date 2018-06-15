@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 
 public class ScoreBoardFragment extends Fragment {
-    private Button btnMap,btnList,btnBack;
+    //private Button btnMap,btnList,btnBack;
     private final int LIST_FRAGMENT = 0;
     private final int MAP_FRAGMENT = 1;
     private DatabaseHelper myDatabasehelper;
@@ -29,7 +29,7 @@ public class ScoreBoardFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_score_board, container, false);
         listView = (ListView)view.findViewById(R.id.listview);
         myDatabasehelper = new DatabaseHelper((ScoreAndMapFragmentsActivity)getContext());
-        btnMap = (Button) view.findViewById(R.id.mapfragment);
+        /*btnMap = (Button) view.findViewById(R.id.mapfragment);
         btnList = (Button)view.findViewById(R.id.listfragment);
         btnBack = (Button)view.findViewById(R.id.back);
         btnList.setOnClickListener(new View.OnClickListener() {
@@ -50,7 +50,7 @@ public class ScoreBoardFragment extends Fragment {
                 Intent intent = new Intent((ScoreAndMapFragmentsActivity) getActivity(), HomePageActivity.class);
                 intent.putExtra("year",0);
                 startActivity(intent);
-            }});
+            }});*/
         populateListView();
         return view;
     }

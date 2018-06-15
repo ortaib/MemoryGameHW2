@@ -304,9 +304,11 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     public void backToHomePage(View view) {
         if (isBusy == false) {
-            Intent intent = new Intent(this, HomePageActivity.class);
+            Intent intent = new Intent();
             unbindService(aConnection);
-            startActivity(intent);
+            intent.putExtra(getString(R.string.score),score);
+            setResult(RESULT_OK,intent);
+            finish();
         }
 
     }
@@ -404,7 +406,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
     public void moveToScoreboard(View view){
         Intent intent = new Intent(this,ScoreAndMapFragmentsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
     private ServiceConnection aConnection=new ServiceConnection() {
         @Override
@@ -461,6 +463,16 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             e.printStackTrace();
         }
         return fullAddress;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==1){
+            if(resultCode == RESULT_OK){
+
+            }
+        }
     }
 }
 

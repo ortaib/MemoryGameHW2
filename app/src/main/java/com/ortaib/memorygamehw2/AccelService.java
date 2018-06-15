@@ -13,13 +13,11 @@ import android.widget.Toast;
 
 public class AccelService extends Service implements SensorEventListener{
     private final IBinder accelBinder= new LocalAccelBinder();
-    private float x,y,z;
-    private float sX,sY,sZ;
-    private double startAngle;
-    private double angle;
-    private boolean isFirstSet=false;
+    private final float MULT_FACTOR =  57.2957795f;
+    private float sA,sR,sP;
+    private int isSet=5;
 
-    private final int ALLOWEDOFFSET=5;
+    private final int ALLOWEDOFFSET=20;
     public AccelService() {
     }
 
@@ -28,40 +26,74 @@ public class AccelService extends Service implements SensorEventListener{
 
         Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        //registering Sensor
-        Sensor sensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
         mSensorManager.registerListener(this,
                 mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL);
+                SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_UI);
+
+
         return accelBinder;
     }
 
     public boolean isOnPosition()
     {
-        if(Math.abs(startAngle-angle)<ALLOWEDOFFSET)
+        if(Math.abs(sP-pitch)<ALLOWEDOFFSET&&Math.abs(sR-roll)<ALLOWEDOFFSET&&Math.abs(sA-azimuth)<ALLOWEDOFFSET)
         {
             //Toast.makeText(this, "on pos", Toast.LENGTH_LONG).show();
             return true;
         }
         return false;
     }
+    // Gravity rotational data
+    private float gravity[];
+    // Magnetic rotational data
+    private float magnetic[]; //for magnetic rotational data
+    private float accels[] = new float[3];
+    private float mags[] = new float[3];
+    private float[] values = new float[3];
+
+    // azimuth, pitch and roll
+    private float azimuth;
+    private float pitch;
+    private float roll;
     @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        if(!isFirstSet){
-            sX=sensorEvent.values[0];
-            sY=sensorEvent.values[1];
-            //sZ=sensorEvent.values[2];
-            startAngle = Math.atan2(sX, sY)/(Math.PI/180);
-            isFirstSet=true;
-            Toast.makeText(this, "Service start angle "+startAngle, Toast.LENGTH_LONG).show();
+    public void onSensorChanged(SensorEvent event) {
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                mags = event.values.clone();
+                break;
+            case Sensor.TYPE_ACCELEROMETER:
+                accels = event.values.clone();
+                break;
         }
-        else
+
+        if (mags != null && accels != null) {
+            gravity = new float[9];
+            magnetic = new float[9];
+            SensorManager.getRotationMatrix(gravity, magnetic, accels, mags);
+            float[] outGravity = new float[9];
+            SensorManager.remapCoordinateSystem(gravity, SensorManager.AXIS_X,SensorManager.AXIS_Z, outGravity);
+            SensorManager.getOrientation(outGravity, values);
+
+            azimuth = values[0] * MULT_FACTOR;
+            pitch =values[1] * MULT_FACTOR;
+            roll = values[2] * MULT_FACTOR;
+            mags = null;
+            accels = null;
+            //
+            if(isSet==0)
             {
-            x=sensorEvent.values[0];
-            y=sensorEvent.values[1];
-            angle = Math.atan2(x, y)/(Math.PI/180);
-            //z=sensorEvent.values[2];
+                sA = azimuth;
+                sP=pitch;
+                sR=roll;
+                isSet=10;
+                Toast.makeText(this,"Start values: "+sA+", "+sP+", "+sR ,Toast.LENGTH_LONG).show();
+            }
+            else
+            {
+                if(isSet<10&&isSet>0)
+                    isSet--;
+            }
         }
 
     }
@@ -71,12 +103,12 @@ public class AccelService extends Service implements SensorEventListener{
 
     }
 
-      private SensorManager mSensorManager;
+    private SensorManager mSensorManager;
 
-      @Override
-      public void onCreate() {
-          mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-      }
+    @Override
+    public void onCreate() {
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+    }
     public class LocalAccelBinder extends Binder{
         AccelService getService(){
             return AccelService.this;

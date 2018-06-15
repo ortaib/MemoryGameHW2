@@ -10,4 +10,5 @@
     <string name="time">time</string>
     <string name="rows">rows</string>
     <string name="cols">cols</string>
+    <string name="score">score</string>
 </resources>

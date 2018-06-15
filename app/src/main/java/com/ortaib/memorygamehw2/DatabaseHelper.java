@@ -48,7 +48,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             int idOfMinumumScore = data.getInt(0);
             final String update = "UPDATE " +TABLE_NAME+ " SET "
                     +COL2+ " = '" + name + "', " +COL3+ " = "+score+ ", " +COL4+ " = " +latitude+", "+
-                    COL5+ " = " +longitude+", "+COL6+ " = " +address+ " WHERE " + COL1 + " = " + idOfMinumumScore;
+                    COL5+ " = " +longitude+", "+COL6+ " = '" +address+ "' WHERE " + COL1 + " = " + idOfMinumumScore;
             db.execSQL(update);
             return true;
         }

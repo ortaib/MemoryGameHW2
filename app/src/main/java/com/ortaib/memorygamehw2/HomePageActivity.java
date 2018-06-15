@@ -13,8 +13,9 @@ import java.util.Calendar;
 public class HomePageActivity extends AppCompatActivity {
     private Bundle extras;
     private String name;
-    private int year,month,day,age;
+    private int year,month,day,age,score;
     private SharedPreferences mPreferences;
+    private TextView scoreView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,7 @@ public class HomePageActivity extends AppCompatActivity {
         month = mPreferences.getInt(getString(R.string.month),0);
         day = mPreferences.getInt(getString(R.string.day),0);
         name = mPreferences.getString(getString(R.string.name),"undefined");
+        scoreView = (TextView)findViewById(R.id.score);
         Intent intent = getIntent();
         TextView view = (TextView)findViewById(R.id.name_age);
         extras = intent.getExtras();
@@ -42,26 +44,21 @@ public class HomePageActivity extends AppCompatActivity {
         intent.putExtra(getString(R.string.time),""+45);
         intent.putExtra(getString(R.string.rows),""+4);
         intent.putExtra(getString(R.string.cols),""+4);
-
-
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
     public void startEasyGame(View view) {
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra(getString(R.string.time), "" + 30);
         intent.putExtra(getString(R.string.rows), "" + 4);
         intent.putExtra(getString(R.string.cols), "" + 3);
-
-
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
     public void startHardGame(View view) {
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra(getString(R.string.time), "" + 60);
         intent.putExtra(getString(R.string.rows), "" + 4);
         intent.putExtra(getString(R.string.cols), "" + 5);
-
-        startActivity(intent);
+        startActivityForResult(intent,1);
     }
     //
     public int getAge(int year,int month,int day){
@@ -84,7 +81,24 @@ public class HomePageActivity extends AppCompatActivity {
     }
     public void moveToScoreboard(View view){
         Intent intent = new Intent(this,ScoreAndMapFragmentsActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent,2);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode){
+            case 1:
+                if(resultCode == RESULT_OK){
+                    score = data.getIntExtra(getString(R.string.score),0);
+                    scoreView.setText("Recent Score : "+score);
+                }
+            case 2:
+                if(requestCode == RESULT_OK){
+
+                }
+
+        }
     }
 
 }

@@ -24,7 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapFragment extends Fragment implements OnMapReadyCallback {
-    private Button btnMap,btnList,btnBack;
+    //private Button btnMap,btnList,btnBack;
     private final int LIST_FRAGMENT = 0;
     private final int MAP_FRAGMENT = 1;
     private SupportMapFragment mMapFragment;
@@ -41,7 +41,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_map, container, false);
         myDatabasehelper = new DatabaseHelper((ScoreAndMapFragmentsActivity)getContext());
-        btnMap = (Button) view.findViewById(R.id.mapfragment);
+        /*btnMap = (Button) view.findViewById(R.id.mapfragment);
         btnList = (Button)view.findViewById(R.id.listfragment);
         btnBack = (Button)view.findViewById(R.id.back);
         btnList.setOnClickListener(new View.OnClickListener() {
@@ -60,10 +60,10 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent((ScoreAndMapFragmentsActivity)getActivity(),HomePageActivity.class);
-                intent.putExtra("year",0);
+                intent.putExtra(getString(R.string.score),0);
                 startActivity(intent);
             }
-        });
+        });*/
         initMap();
         return view;
     }
