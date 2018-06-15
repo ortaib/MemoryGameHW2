@@ -9,6 +9,8 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Rect;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -35,6 +37,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 import java.util.Stack;
 
@@ -120,7 +125,6 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             }
         };
         getLocationPermission();
-        getDeviceLocation();
         grid = (GridLayout) findViewById(R.id.board);
         grid.setColumnCount(numColumn);
         grid.setRowCount(numRows);
@@ -210,6 +214,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
                 gameResult = (TextView) findViewById(R.id.res_text);
 
                 gameResult.setText("Time's up! Game Over!");
+                getDeviceLocation();
             }
         };
         timer.start();
@@ -329,7 +334,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void addData(String name, int score, double latitude, double longitude) {
-        boolean insertData = myDatabaseHelper.addData(name, score, latitude, longitude);
+        String address = getAddress(latitude,longitude);
+        boolean insertData = myDatabaseHelper.addData(name, score, latitude, longitude,address);
         if (insertData) {
             toastMessage("Data successfully inserted, Score " + score);
         } else {
@@ -441,6 +447,20 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
            score--;
            scoreTextView.setText("" + score);
         }
+    }
+    public String getAddress(double lat, double lon){
+        String fullAddress = "undefined";
+        try{
+            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
+            List<Address> addresses = geocoder.getFromLocation(lat,lon,1);
+            if(addresses.size()>0){
+                Address address = addresses.get(0);
+                fullAddress = address.getAddressLine(0);
+            }
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return fullAddress;
     }
 }
 

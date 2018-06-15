@@ -91,14 +91,15 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     private void putMarkers(){
         Cursor data = myDatabasehelper.getData();
         double lat,lon;
-        String name;
+        String name,address;
         int num=1,score;
         while(data.moveToNext()){
             name = data.getString(1);
             score = data.getInt(2);
             lat = data.getDouble(3);
             lon = data.getDouble(4);
-            mMap.addMarker(new MarkerOptions().position(new LatLng(lat,lon)).title("#"+num).snippet("name: " +name+
+            address = data.getString(5);
+            mMap.addMarker(new MarkerOptions().position(new LatLng(lat,lon)).title("#"+num+": "+address).snippet("name: " +name+
                     ", Score : "+score));
             num++;
         }
