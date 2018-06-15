@@ -1,3 +1,13 @@
 <resources>
     <string name="app_name">MemoryGameHW2</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="title_activity_map">Map</string>
+    <string name="google_maps_api_key">AIzaSyBQAQK1pptQ-1dqO-cKvEsCM-2iBSvX2V8</string>
+    <string name="month">month</string>
+    <string name="day">day</string>
+    <string name="year">year</string>
+    <string name="name">name</string>
+    <string name="time">time</string>
+    <string name="rows">rows</string>
+    <string name="cols">cols</string>
 </resources>
